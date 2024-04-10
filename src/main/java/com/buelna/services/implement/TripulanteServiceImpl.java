@@ -40,7 +40,8 @@ public class TripulanteServiceImpl implements TripulanteService {
             Tripulante createTripulante = new Tripulante(
                     tripulante.getName(),
                     tripulante.getRole(),
-                    Date.valueOf(LocalDate.now()));
+                    Date.valueOf(LocalDate.now()),
+                    tripulante.getNaveId());
 
             return TripulanteMapper.mapper.tripulanteToTripulanteDTO(tripulanteRepository.save(createTripulante));
         } catch (Exception exception) {
@@ -61,6 +62,7 @@ public class TripulanteServiceImpl implements TripulanteService {
             Tripulante updateTripulante = findTripulante.get();
             updateTripulante.setName(tripulante.getName());
             updateTripulante.setRole(tripulante.getRole());
+            updateTripulante.setNaveId(tripulante.getNaveId());
 
             return TripulanteMapper.mapper.tripulanteToTripulanteDTO(tripulanteRepository.save(updateTripulante));
         } catch (Exception exception) {
