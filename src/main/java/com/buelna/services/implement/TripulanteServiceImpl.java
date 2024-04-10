@@ -2,6 +2,7 @@ package com.buelna.services.implement;
 
 import com.buelna.dto.TripulanteDTO;
 import com.buelna.entities.Tripulante;
+import com.buelna.exceptions.NotFoundException;
 import com.buelna.mapper.TripulanteMapper;
 import com.buelna.repository.TripulanteRepository;
 import com.buelna.services.TripulanteService;
@@ -29,33 +30,42 @@ public class TripulanteServiceImpl implements TripulanteService {
     @Override
     public TripulanteDTO getTripulanteById(Long id) {
         Tripulante tripulante = tripulanteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("El tripulante no fue encontrado"));
+                .orElseThrow(() -> new NotFoundException("El tripulante no fue encontrado"));
         return TripulanteMapper.mapper.tripulanteToTripulanteDTO(tripulante);
     }
 
     @Override
     public TripulanteDTO saveTripulante(TripulanteDTO tripulante) {
-        Tripulante createTripulante = new Tripulante(
-                tripulante.getName(),
-                tripulante.getRole(),
-                Date.valueOf(LocalDate.now()));
+        try {
+            Tripulante createTripulante = new Tripulante(
+                    tripulante.getName(),
+                    tripulante.getRole(),
+                    Date.valueOf(LocalDate.now()));
 
-        return TripulanteMapper.mapper.tripulanteToTripulanteDTO(tripulanteRepository.save(createTripulante));
+            return TripulanteMapper.mapper.tripulanteToTripulanteDTO(tripulanteRepository.save(createTripulante));
+        } catch (Exception exception) {
+            throw new RuntimeException("Ha ocurrido un problema con la aplicacion");
+        }
     }
 
     @Override
     public TripulanteDTO updateTripulante(TripulanteDTO tripulante, Long id) {
-        Optional<Tripulante> findTripulante = tripulanteRepository.findById(id);
 
-        if (findTripulante.isEmpty()) {
-            throw new RuntimeException("El tripulante no fue encontrado");
+        try {
+            Optional<Tripulante> findTripulante = tripulanteRepository.findById(id);
+
+            if (findTripulante.isEmpty()) {
+                throw new NotFoundException("El tripulante no fue encontrado");
+            }
+
+            Tripulante updateTripulante = findTripulante.get();
+            updateTripulante.setName(tripulante.getName());
+            updateTripulante.setRole(tripulante.getRole());
+
+            return TripulanteMapper.mapper.tripulanteToTripulanteDTO(tripulanteRepository.save(updateTripulante));
+        } catch (Exception exception) {
+            throw new RuntimeException("Ha ocurrido un problema con la aplicacion");
         }
-
-        Tripulante updateTripulante = findTripulante.get();
-        updateTripulante.setName(tripulante.getName());
-        updateTripulante.setRole(tripulante.getRole());
-
-        return TripulanteMapper.mapper.tripulanteToTripulanteDTO(tripulanteRepository.save(updateTripulante));
     }
 
     @Override
@@ -63,7 +73,7 @@ public class TripulanteServiceImpl implements TripulanteService {
         Optional<Tripulante> findTripulante = tripulanteRepository.findById(id);
 
         if (findTripulante.isEmpty()) {
-            throw new RuntimeException("El tripulante no fue encontrado");
+            throw new NotFoundException("El tripulante no fue encontrado");
         }
         tripulanteRepository.deleteById(id);
     }
