@@ -22,14 +22,18 @@ public class Tripulante {
     @Column(name = "registered_at")
     private Date registeredAt;
 
+    @Column(name = "nave_id")
+    private Long naveId;
+
     public Tripulante(String name, String role) {
         this.name = name;
         this.role = role;
     }
 
-    public Tripulante(String name, String role, Date registeredAt) {
+    public Tripulante(String name, String role, Date registeredAt, Long naveId) {
         this.name = name;
         this.role = role;
         this.registeredAt = registeredAt;
+        this.naveId = naveId;
     }
 }

@@ -15,4 +15,5 @@ public class TripulanteDTO implements Serializable {
     private String name;
     private String role;
     private Date registeredAt;
+    private Long naveId;
 }

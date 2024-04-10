@@ -19,6 +19,7 @@ public class TripulanteController {
 
     @GetMapping
     public ResponseEntity<List<Tripulante>> getTripulantes() {
+
         return ResponseEntity.ok(tripulanteService.getAll());
     }
 
